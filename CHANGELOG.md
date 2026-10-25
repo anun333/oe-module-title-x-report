@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.1 (unreleased)
+## 0.1.1 (2026-10-25)
 
 - **Fixed: saving the settings and downloading the FPAR file stopped on OpenEMR 7.0.x.** Both read form fields with `InputBag::getString()`, which Symfony added in 6.3, and OpenEMR 7.0.x ships Symfony 5.4. The report page itself worked, so a check that only loaded pages passed. The nightly fresh installs (7.0.2 and 8.5.0) now post the forms as the page posts them.
 - **Checked:** fresh official 7.0.2 and 8.5.0 installs, with the settings saved and the file downloaded; unit tests.
