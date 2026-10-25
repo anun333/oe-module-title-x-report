@@ -32,8 +32,8 @@ $request = Request::get();
 $settings = new Settings();
 $source = new EncounterSource();
 $saved = false;
-if ($request->isMethod('POST') && $request->request->getString('action') === 'settings') {
-    OpenEmr::requireCsrf($request->request->getString('csrf_token_form'));
+if ($request->isMethod('POST') && Request::text($request->request->all(), 'action') === 'settings') {
+    OpenEmr::requireCsrf(Request::text($request->request->all(), 'csrf_token_form'));
     $settings->save(array_map('intval', $request->request->all('categories')), array_map('intval', $request->request->all('facilities')), (int)OpenEmr::session('authUserID'));
     OpenEmr::audit('other', 'Title X Report: settings saved');
     $saved = true;

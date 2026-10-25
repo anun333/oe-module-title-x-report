@@ -32,7 +32,7 @@ $request = Request::get();
 if (!$request->isMethod('POST')) {
     OpenEmr::deny('Title X Report: download not posted', xl('Title X Report'), 'Title X Report');
 }
-OpenEmr::requireCsrf($request->request->getString('csrf_token_form'));
+OpenEmr::requireCsrf(Request::text($request->request->all(), 'csrf_token_form'));
 $thisYear = (int)date('Y');
 $year = max(2020, min($thisYear, $request->request->getInt('year', $thisYear - 1)));
 $settings = new Settings();
