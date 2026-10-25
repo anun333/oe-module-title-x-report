@@ -1,0 +1,890 @@
+{
+    "resourceType": "Questionnaire",
+    "id": "title-x-visit-record",
+    "meta": {
+        "profile": [
+            "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire|4.0.0"
+        ]
+    },
+    "text": {
+        "status": "generated",
+        "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"en\" xml:lang=\"en\"><p><b>Title X Family Planning Visit Record</b></p><p>The family planning items Title X's annual report (FPAR 2.0) asks for at each visit, each coded as OPA's valid values file of 4/3/2026 codes it, so the visit saved as an OpenEMR questionnaire holds what the Title X Report reads. The patient's part comes first, then the clinician's, then Title X's own items from 42 CFR 59. The rest of FPAR comes from OpenEMR's own records: demographics, income, insurance, vitals, smoking status and lab orders (docs/products/title-x/fpar2-mapping-2026-10.md in the openhealthcare workspace). Answers print in our words; on screen each shows its code system's name. Contains SNOMED CT codes from the Global Patient Set, and LOINC codes. The answers whose SNOMED CT values are only in the US Extension (pregnancy intention, and some methods and reasons) use OPA's LOINC answer codes instead, which OPA still accepts: the US Extension can't be shipped worldwide.</p></div>"
+    },
+    "language": "en",
+    "url": "https://github.com/anun333/oe-module-clinic-forms/questionnaire/title-x-visit-record",
+    "identifier": [
+        {
+            "system": "https://github.com/anun333/oe-module-clinic-forms/questionnaire",
+            "value": "title-x-visit-record"
+        }
+    ],
+    "version": "2",
+    "extension": [
+        {
+            "url": "http://hl7.org/fhir/StructureDefinition/artifact-versionAlgorithm",
+            "valueCoding": {
+                "system": "http://hl7.org/fhir/version-algorithm",
+                "code": "integer",
+                "display": "Integer"
+            }
+        }
+    ],
+    "name": "TitleXFamilyPlanningVisitRecord",
+    "title": "Title X Family Planning Visit Record",
+    "status": "active",
+    "subjectType": [
+        "Patient"
+    ],
+    "publisher": "Clinic Forms",
+    "description": "The family planning items Title X's annual report (FPAR 2.0) asks for at each visit, each coded as OPA's valid values file of 4/3/2026 codes it, so the visit saved as an OpenEMR questionnaire holds what the Title X Report reads. The patient's part comes first, then the clinician's, then Title X's own items from 42 CFR 59. The rest of FPAR comes from OpenEMR's own records: demographics, income, insurance, vitals, smoking status and lab orders (docs/products/title-x/fpar2-mapping-2026-10.md in the openhealthcare workspace). Answers print in our words; on screen each shows its code system's name. Contains SNOMED CT codes from the Global Patient Set, and LOINC codes. The answers whose SNOMED CT values are only in the US Extension (pregnancy intention, and some methods and reasons) use OPA's LOINC answer codes instead, which OPA still accepts: the US Extension can't be shipped worldwide.",
+    "copyright": "Clinic Forms contributors. CC0 1.0 covers this document's own wording, layout and structure: dedicated to the public domain, use and adapt it freely, with no credit needed. It does not cover the codes, which stay under their own terms. LOINC codes and names: LOINC's licence (https://loinc.org/license). SNOMED CT identifiers and terms in this file are from the SNOMED CT Global Patient Set (GPS), © International Health Terminology Standards Development Organisation (trading as SNOMED International), licensed under CC BY-ND 4.0 (https://creativecommons.org/licenses/by-nd/4.0/), provided without warranty; see https://www.snomed.org/gps. SNOMED CT® was originally created by the College of American Pathologists. SNOMED and SNOMED CT are registered trademarks of SNOMED International.",
+    "item": [
+        {
+            "linkId": "b1.3",
+            "text": "Visit date",
+            "type": "date"
+        },
+        {
+            "linkId": "b1.4",
+            "text": "Clinician",
+            "type": "string"
+        },
+        {
+            "linkId": "b2",
+            "text": "Ask the patient",
+            "type": "group",
+            "item": [
+                {
+                    "linkId": "/98076-3",
+                    "code": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "98076-3",
+                            "display": "Do you want to talk about contraception or pregnancy prevention during your visit today"
+                        }
+                    ],
+                    "text": "Do you want to talk about contraception or pregnancy prevention during your visit today?",
+                    "type": "choice",
+                    "repeats": false,
+                    "answerOption": [
+                        {
+                            "valueCoding": {
+                                "system": "http://loinc.org",
+                                "code": "LA33-6",
+                                "display": "Yes"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://loinc.org",
+                                "code": "LA32389-1",
+                                "display": "No - I do not want to talk about contraception today because I am here for something else"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://loinc.org",
+                                "code": "LA32390-9",
+                                "display": "No - This question does not apply to me/I prefer not to answer"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://loinc.org",
+                                "code": "LA32393-3",
+                                "display": "No - I am already using contraception"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://loinc.org",
+                                "code": "LA32391-7",
+                                "display": "No - I am unsure or don't want to use contraception"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://loinc.org",
+                                "code": "LA32392-5",
+                                "display": "No - I am hoping to become pregnant in the near future"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "linkId": "/86645-9",
+                    "code": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "86645-9",
+                            "display": "Pregnancy intention in the next year - Reported"
+                        }
+                    ],
+                    "text": "Would you like to become pregnant in the next year? (May be left blank for a male patient.)",
+                    "type": "choice",
+                    "repeats": false,
+                    "answerOption": [
+                        {
+                            "valueCoding": {
+                                "system": "http://loinc.org",
+                                "code": "LA26438-4",
+                                "display": "Yes, I want to become pregnant"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://loinc.org",
+                                "code": "LA26440-0",
+                                "display": "No, I don't want to become pregnant"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://loinc.org",
+                                "code": "LA26439-2",
+                                "display": "I'm OK either way"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://loinc.org",
+                                "code": "LA14072-5",
+                                "display": "Unsure"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "linkId": "/86649-1",
+                    "code": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "86649-1",
+                            "display": "Birth control method at intake Reported"
+                        }
+                    ],
+                    "text": "Contraceptive method used now, at the start of the visit (tick the most effective one)",
+                    "type": "choice",
+                    "repeats": false,
+                    "answerOption": [
+                        {
+                            "valueCoding": {
+                                "system": "http://snomed.info/sct",
+                                "version": "http://snomed.info/sct/900000000000207008",
+                                "code": "60890002",
+                                "display": "Female sterilization"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://snomed.info/sct",
+                                "version": "http://snomed.info/sct/900000000000207008",
+                                "code": "22523008",
+                                "display": "Vasectomy"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://snomed.info/sct",
+                                "version": "http://snomed.info/sct/900000000000207008",
+                                "code": "428987008",
+                                "display": "Subcutaneous contraceptive implant present"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://snomed.info/sct",
+                                "version": "http://snomed.info/sct/900000000000207008",
+                                "code": "449038007",
+                                "display": "Uses hormone releasing intrauterine device contraception"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://snomed.info/sct",
+                                "version": "http://snomed.info/sct/900000000000207008",
+                                "code": "448962006",
+                                "display": "Uses copper intrauterine device contraception"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://snomed.info/sct",
+                                "version": "http://snomed.info/sct/900000000000207008",
+                                "code": "312081001",
+                                "display": "Uses IUD (intrauterine device) contraception"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://snomed.info/sct",
+                                "version": "http://snomed.info/sct/900000000000207008",
+                                "code": "268464009",
+                                "display": "Uses depot contraception"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://snomed.info/sct",
+                                "version": "http://snomed.info/sct/900000000000207008",
+                                "code": "268458002",
+                                "display": "Uses combined oral contraception"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://snomed.info/sct",
+                                "version": "http://snomed.info/sct/900000000000207008",
+                                "code": "169467008",
+                                "display": "Uses progestogen only oral contraception"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://snomed.info/sct",
+                                "version": "http://snomed.info/sct/900000000000207008",
+                                "code": "413116005",
+                                "display": "Uses transdermal contraception"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://snomed.info/sct",
+                                "version": "http://snomed.info/sct/900000000000207008",
+                                "code": "450850003",
+                                "display": "Uses vaginal hormone releasing ring"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://snomed.info/sct",
+                                "version": "http://snomed.info/sct/900000000000207008",
+                                "code": "450851004",
+                                "display": "Uses contraceptive diaphragm"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://snomed.info/sct",
+                                "version": "http://snomed.info/sct/900000000000207008",
+                                "code": "442450006",
+                                "display": "Male condom, device"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://snomed.info/sct",
+                                "version": "http://snomed.info/sct/900000000000207008",
+                                "code": "228479001",
+                                "display": "Uses a female condom"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://loinc.org",
+                                "code": "LA33038-3",
+                                "display": "Contraceptive gel"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://snomed.info/sct",
+                                "version": "http://snomed.info/sct/900000000000207008",
+                                "code": "268466006",
+                                "display": "Uses spermicidal contraception"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://snomed.info/sct",
+                                "version": "http://snomed.info/sct/900000000000207008",
+                                "code": "169530003",
+                                "display": "Uses contraceptive sponge"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://loinc.org",
+                                "code": "LA27918-4",
+                                "display": "Fertility awareness-based methods"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://loinc.org",
+                                "code": "LA27919-2",
+                                "display": "Lactational amenorrhea method"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://snomed.info/sct",
+                                "version": "http://snomed.info/sct/900000000000207008",
+                                "code": "169513000",
+                                "display": "Uses withdrawal method of contraception"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://snomed.info/sct",
+                                "version": "http://snomed.info/sct/900000000000207008",
+                                "code": "268463003",
+                                "display": "Uses postcoital contraception"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://loinc.org",
+                                "code": "LA27920-0",
+                                "display": "Male relying on female method"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://loinc.org",
+                                "code": "LA27922-6",
+                                "display": "Decline to answer"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://snomed.info/sct",
+                                "version": "http://snomed.info/sct/900000000000207008",
+                                "code": "169450001",
+                                "display": "No contraceptive precautions"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "linkId": "/86650-9",
+                    "code": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "86650-9",
+                            "display": "Reason for no birth control use - Reported --at intake"
+                        }
+                    ],
+                    "text": "If none: the main reason",
+                    "type": "choice",
+                    "repeats": false,
+                    "answerOption": [
+                        {
+                            "valueCoding": {
+                                "system": "http://loinc.org",
+                                "code": "LA14550-0",
+                                "display": "Abstinence"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://loinc.org",
+                                "code": "LA27925-9",
+                                "display": "Same sex partner"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://snomed.info/sct",
+                                "version": "http://snomed.info/sct/900000000000207008",
+                                "code": "15296000",
+                                "display": "Sterility"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://loinc.org",
+                                "code": "LA27928-3",
+                                "display": "Seeking pregnancy"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://snomed.info/sct",
+                                "version": "http://snomed.info/sct/900000000000207008",
+                                "code": "74964007",
+                                "display": "Other"
+                            }
+                        }
+                    ],
+                    "enableWhen": [
+                        {
+                            "question": "/86649-1",
+                            "operator": "=",
+                            "answerCoding": {
+                                "system": "http://snomed.info/sct",
+                                "code": "169450001",
+                                "display": "No contraceptive precautions"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "linkId": "b7",
+            "text": "Clinician, at the end of the visit",
+            "type": "group",
+            "item": [
+                {
+                    "linkId": "/82810-3",
+                    "code": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "82810-3",
+                            "display": "Pregnancy status"
+                        }
+                    ],
+                    "text": "Pregnancy status",
+                    "type": "choice",
+                    "repeats": false,
+                    "answerOption": [
+                        {
+                            "valueCoding": {
+                                "system": "http://snomed.info/sct",
+                                "version": "http://snomed.info/sct/900000000000207008",
+                                "code": "77386006",
+                                "display": "Pregnancy"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://snomed.info/sct",
+                                "version": "http://snomed.info/sct/900000000000207008",
+                                "code": "60001007",
+                                "display": "Not pregnant"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor",
+                                "code": "UNK",
+                                "display": "Unknown"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "linkId": "/86654-1",
+                    "code": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "86654-1",
+                            "display": "Contraceptive counseling was provided"
+                        }
+                    ],
+                    "text": "Contraceptive counseling given (the clinician spent time, about 5 to 10 minutes, on the patient's options)",
+                    "type": "choice",
+                    "repeats": false,
+                    "answerOption": [
+                        {
+                            "valueCoding": {
+                                "system": "http://snomed.info/sct",
+                                "version": "http://snomed.info/sct/900000000000207008",
+                                "code": "373066001",
+                                "display": "Yes"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://snomed.info/sct",
+                                "version": "http://snomed.info/sct/900000000000207008",
+                                "code": "373067005",
+                                "display": "No"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "linkId": "/86655-8",
+                    "code": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "86655-8",
+                            "display": "Counseling to achieve pregnancy was provided"
+                        }
+                    ],
+                    "text": "Counseling to achieve pregnancy given",
+                    "type": "choice",
+                    "repeats": false,
+                    "answerOption": [
+                        {
+                            "valueCoding": {
+                                "system": "http://snomed.info/sct",
+                                "version": "http://snomed.info/sct/900000000000207008",
+                                "code": "373066001",
+                                "display": "Yes"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://snomed.info/sct",
+                                "version": "http://snomed.info/sct/900000000000207008",
+                                "code": "373067005",
+                                "display": "No"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "linkId": "/86651-7",
+                    "code": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "86651-7",
+                            "display": "Birth control method at exit Reported --at exit"
+                        }
+                    ],
+                    "text": "Contraceptive method at the end of the visit, after counseling (tick the most effective one)",
+                    "type": "choice",
+                    "repeats": false,
+                    "answerOption": [
+                        {
+                            "valueCoding": {
+                                "system": "http://snomed.info/sct",
+                                "version": "http://snomed.info/sct/900000000000207008",
+                                "code": "60890002",
+                                "display": "Female sterilization"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://snomed.info/sct",
+                                "version": "http://snomed.info/sct/900000000000207008",
+                                "code": "22523008",
+                                "display": "Vasectomy"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://snomed.info/sct",
+                                "version": "http://snomed.info/sct/900000000000207008",
+                                "code": "428987008",
+                                "display": "Subcutaneous contraceptive implant present"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://snomed.info/sct",
+                                "version": "http://snomed.info/sct/900000000000207008",
+                                "code": "449038007",
+                                "display": "Uses hormone releasing intrauterine device contraception"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://snomed.info/sct",
+                                "version": "http://snomed.info/sct/900000000000207008",
+                                "code": "448962006",
+                                "display": "Uses copper intrauterine device contraception"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://snomed.info/sct",
+                                "version": "http://snomed.info/sct/900000000000207008",
+                                "code": "312081001",
+                                "display": "Uses IUD (intrauterine device) contraception"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://snomed.info/sct",
+                                "version": "http://snomed.info/sct/900000000000207008",
+                                "code": "268464009",
+                                "display": "Uses depot contraception"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://snomed.info/sct",
+                                "version": "http://snomed.info/sct/900000000000207008",
+                                "code": "268458002",
+                                "display": "Uses combined oral contraception"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://snomed.info/sct",
+                                "version": "http://snomed.info/sct/900000000000207008",
+                                "code": "169467008",
+                                "display": "Uses progestogen only oral contraception"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://snomed.info/sct",
+                                "version": "http://snomed.info/sct/900000000000207008",
+                                "code": "413116005",
+                                "display": "Uses transdermal contraception"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://snomed.info/sct",
+                                "version": "http://snomed.info/sct/900000000000207008",
+                                "code": "450850003",
+                                "display": "Uses vaginal hormone releasing ring"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://snomed.info/sct",
+                                "version": "http://snomed.info/sct/900000000000207008",
+                                "code": "450851004",
+                                "display": "Uses contraceptive diaphragm"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://snomed.info/sct",
+                                "version": "http://snomed.info/sct/900000000000207008",
+                                "code": "442450006",
+                                "display": "Male condom, device"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://snomed.info/sct",
+                                "version": "http://snomed.info/sct/900000000000207008",
+                                "code": "228479001",
+                                "display": "Uses a female condom"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://loinc.org",
+                                "code": "LA33038-3",
+                                "display": "Contraceptive gel"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://snomed.info/sct",
+                                "version": "http://snomed.info/sct/900000000000207008",
+                                "code": "268466006",
+                                "display": "Uses spermicidal contraception"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://snomed.info/sct",
+                                "version": "http://snomed.info/sct/900000000000207008",
+                                "code": "169530003",
+                                "display": "Uses contraceptive sponge"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://loinc.org",
+                                "code": "LA27918-4",
+                                "display": "Fertility awareness-based methods"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://loinc.org",
+                                "code": "LA27919-2",
+                                "display": "Lactational amenorrhea method"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://snomed.info/sct",
+                                "version": "http://snomed.info/sct/900000000000207008",
+                                "code": "169513000",
+                                "display": "Uses withdrawal method of contraception"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://snomed.info/sct",
+                                "version": "http://snomed.info/sct/900000000000207008",
+                                "code": "268463003",
+                                "display": "Uses postcoital contraception"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://loinc.org",
+                                "code": "LA27920-0",
+                                "display": "Male relying on female method"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://loinc.org",
+                                "code": "LA27922-6",
+                                "display": "Decline to answer"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://snomed.info/sct",
+                                "version": "http://snomed.info/sct/900000000000207008",
+                                "code": "169450001",
+                                "display": "No contraceptive precautions"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "linkId": "/86653-3",
+                    "code": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "86653-3",
+                            "display": "Reason for no birth control use - Reported --at exit"
+                        }
+                    ],
+                    "text": "If none: the main reason",
+                    "type": "choice",
+                    "repeats": false,
+                    "answerOption": [
+                        {
+                            "valueCoding": {
+                                "system": "http://loinc.org",
+                                "code": "LA14550-0",
+                                "display": "Abstinence"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://loinc.org",
+                                "code": "LA27925-9",
+                                "display": "Same sex partner"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://snomed.info/sct",
+                                "version": "http://snomed.info/sct/900000000000207008",
+                                "code": "15296000",
+                                "display": "Sterility"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://loinc.org",
+                                "code": "LA27928-3",
+                                "display": "Seeking pregnancy"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://snomed.info/sct",
+                                "version": "http://snomed.info/sct/900000000000207008",
+                                "code": "74964007",
+                                "display": "Other"
+                            }
+                        }
+                    ],
+                    "enableWhen": [
+                        {
+                            "question": "/86651-7",
+                            "operator": "=",
+                            "answerCoding": {
+                                "system": "http://snomed.info/sct",
+                                "code": "169450001",
+                                "display": "No contraceptive precautions"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "linkId": "/86652-5",
+                    "code": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "86652-5",
+                            "display": "How birth control method was provided"
+                        }
+                    ],
+                    "text": "If a method: how it was provided",
+                    "type": "choice",
+                    "repeats": false,
+                    "answerOption": [
+                        {
+                            "valueCoding": {
+                                "system": "http://snomed.info/sct",
+                                "version": "http://snomed.info/sct/900000000000207008",
+                                "code": "308335008",
+                                "display": "Patient encounter procedure"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://snomed.info/sct",
+                                "version": "http://snomed.info/sct/900000000000207008",
+                                "code": "16076005",
+                                "display": "Prescription"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://snomed.info/sct",
+                                "version": "http://snomed.info/sct/900000000000207008",
+                                "code": "281100006",
+                                "display": "Referral to health worker"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "linkId": "b14",
+            "text": "Title X (42 CFR 59)",
+            "type": "group",
+            "item": [
+                {
+                    "linkId": "b15.0",
+                    "text": "Services offered as voluntary, with no pressure to accept a method or any service (59.5(a)(2))",
+                    "type": "boolean"
+                },
+                {
+                    "linkId": "b15.1",
+                    "text": "Confidentiality explained, and that a policyholder other than the patient may get an insurance statement listing the visit (59.10(a))",
+                    "type": "boolean"
+                },
+                {
+                    "linkId": "b15.2",
+                    "text": "If pregnant: offered information and counseling on each option, with a referral if asked (59.5(a)(5))",
+                    "type": "boolean"
+                },
+                {
+                    "linkId": "b15.3",
+                    "text": "If a minor: family participation encouraged, with no parent's consent required and no parent told (59.10(b))",
+                    "type": "boolean"
+                },
+                {
+                    "linkId": "b15.4",
+                    "text": "Charges set by family income and size (59.5(a)(7) to (9))",
+                    "type": "boolean"
+                },
+                {
+                    "linkId": "b16",
+                    "text": "Notes",
+                    "type": "text"
+                },
+                {
+                    "linkId": "b17.0",
+                    "text": "Clinician",
+                    "type": "group",
+                    "item": [
+                        {
+                            "linkId": "b17.0.name",
+                            "text": "Name",
+                            "type": "string"
+                        },
+                        {
+                            "linkId": "b17.0.date",
+                            "text": "Date",
+                            "type": "date"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

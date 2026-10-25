@@ -1,0 +1,75 @@
+{
+ "about": "How the CDC Race & Ethnicity codes OpenEMR keeps in list_options.notes roll up to FPAR 2.0's five race columns and its ethnicity. The code ranges are the UDS Report module's (data/race-ethnicity.json, checked against the 921 coded entries of OpenEMR's race list): a code's first four digits fall in a group's range. A code in no range, such as 2131-1 Other Race, is race not known. Each column's code is OPA's current CDCREC value for it (data/fpar2.json).",
+ "terms": "CC0 1.0: our own mapping. CDC Race & Ethnicity codes are public (CDC PHIN VADS).",
+ "columns": {
+  "aian": "race_amindian",
+  "asian": "race_asian",
+  "black": "race_black",
+  "pacific": "race_hpi",
+  "white": "race_white"
+ },
+ "raceGroups": [
+  {
+   "group": "asian",
+   "name": "Asian",
+   "codeRanges": [
+    {
+     "from": "2028",
+     "to": "2053"
+    }
+   ]
+  },
+  {
+   "group": "pacific",
+   "name": "Native Hawaiian or Other Pacific Islander",
+   "codeRanges": [
+    {
+     "from": "2076",
+     "to": "2105"
+    },
+    {
+     "from": "2500",
+     "to": "2500"
+    }
+   ]
+  },
+  {
+   "group": "black",
+   "name": "Black or African American",
+   "codeRanges": [
+    {
+     "from": "2054",
+     "to": "2075"
+    }
+   ]
+  },
+  {
+   "group": "aian",
+   "name": "American Indian or Alaska Native",
+   "codeRanges": [
+    {
+     "from": "1002",
+     "to": "2027"
+    }
+   ]
+  },
+  {
+   "group": "white",
+   "name": "White",
+   "codeRanges": [
+    {
+     "from": "2106",
+     "to": "2130"
+    }
+   ]
+  }
+ ],
+ "ethnicity": {
+  "hispanic": "2135-2",
+  "notHispanic": "2186-5",
+  "originCodes": {
+   "from": "2136",
+   "to": "2185"
+  }
+ }
+}

@@ -1,0 +1,64 @@
+{
+ "about": "FPAR 2.0 data element 3, provider role, from the NUCC taxonomy code on the encounter provider's user record (users.taxonomy). OpenEMR's physician_type list has only Physician among OPA's roles, so taxonomy is read instead, as the UDS Report's Table 5 map does. The first matching prefix wins; a taxonomy matching none is Other; no taxonomy is blank.",
+ "terms": "CC0 1.0: our own mapping. NUCC taxonomy codes from https://taxonomy.nucc.org; the roles are OPA's (data/fpar2.json, provider_role).",
+ "rules": [
+  {
+   "prefixes": [
+    "20"
+   ],
+   "role": "Physician (occupation)",
+   "note": "NUCC 20: Allopathic & Osteopathic Physicians"
+  },
+  {
+   "prefixes": [
+    "363L"
+   ],
+   "role": "Nurse practitioner (occupation)",
+   "note": "363L: Nurse Practitioner"
+  },
+  {
+   "prefixes": [
+    "363A"
+   ],
+   "role": "Physician assistant (occupation)",
+   "note": "363A: Physician Assistant"
+  },
+  {
+   "prefixes": [
+    "367A",
+    "176B"
+   ],
+   "role": "Registered midwife (occupation)",
+   "note": "367A: Advanced Practice Midwife (certified nurse-midwife); 176B: Midwife. Our reading: OPA's one midwife role covers both"
+  },
+  {
+   "prefixes": [
+    "163W"
+   ],
+   "role": "Registered nurse (occupation)",
+   "note": "163W: Registered Nurse"
+  },
+  {
+   "prefixes": [
+    "374J"
+   ],
+   "role": "Doula (occupation)",
+   "note": "374J: Doula"
+  },
+  {
+   "prefixes": [
+    "174H"
+   ],
+   "role": "Certified health education specialist (occupation)",
+   "note": "174H: Health Educator"
+  },
+  {
+   "prefixes": [
+    "1041"
+   ],
+   "role": "Social worker (occupation)",
+   "note": "1041: Social Worker"
+  }
+ ],
+ "other": "Other (qualifier value)"
+}
