@@ -29,6 +29,7 @@ use OpenHealthcare\TitleXReport\Report\TablesBuilder;
 use OpenHealthcare\TitleXReport\Report\TitleXReport;
 use OpenHealthcare\TitleXReport\Repository\EncounterSource;
 use OpenHealthcare\TitleXReport\Repository\Settings;
+use OpenHealthcare\TitleXReport\Http\Page;
 
 // The same access as Bootstrap::ACL, written out: tools/footprint.php lists each check it can read.
 if (!AclMain::aclCheckCore('patients', 'demo')) {
@@ -67,7 +68,7 @@ $toFix = $report->toFix();
 ?>
 <!DOCTYPE html>
 <?php // The page is in the signed-in user's OpenEMR language, so translated text is announced in it. ?>
-<html lang="<?php echo attr(OpenEmr::pageLang()); ?>" dir="<?php echo attr(OpenEmr::pageDir()); ?>">
+<html lang="<?php echo attr(Page::lang()); ?>" dir="<?php echo attr(Page::dir()); ?>">
 <head>
     <meta charset="utf-8">
     <title><?php echo xlt('Title X Report'); ?></title>
