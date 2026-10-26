@@ -80,6 +80,10 @@ python3 -I tools/fpar-reference.py <OPA valid values .xlsx> <OPA sample file .xl
 
 The module's code is GPL-3.0-or-later. `data/fpar2.json` holds codes under their owners' terms: LOINC codes and names under LOINC's licence (https://loinc.org/license); SNOMED CT International Edition identifiers and terms from the SNOMED CT Global Patient Set, © International Health Terminology Standards Development Organisation (trading as SNOMED International), under CC BY-ND 4.0 (https://www.snomed.org/gps); CDC Race & Ethnicity and HL7 codes; Source of Payment Typology codes without their names. SNOMED and SNOMED CT are registered trademarks of SNOMED International. Our own maps (`data/race-groups.json`, `data/provider-roles.json`, `data/fpar-tables.json`) are CC0, and `data/poverty-guidelines.json` holds U.S. government figures.
 
+LOINC's notice, as its licence asks of LOINC content passed on:
+
+> This material contains content from LOINC (http://loinc.org). LOINC is copyright © Regenstrief Institute, Inc. and the Logical Observation Identifiers Names and Codes (LOINC) Committee and is available at no cost under the license at http://loinc.org/license. LOINC® is a registered United States trademark of Regenstrief Institute, Inc.
+
 ## Other modules for OpenEMR
 
 See [openhealthcare-common](https://github.com/anun333/openhealthcare-common) for the modules that share it.

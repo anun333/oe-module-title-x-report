@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.1 (unreleased)
+
+- **LOINC's notice** in the README, as LOINC's licence asks of the LOINC codes and names `data/fpar2.json` passes on. It only linked the licence before.
+
 ## 0.2.0 (2026-10-26)
 
 - **OPA's tables, before you upload.** The page shows Tables 1 to 9, 11 and 12 as OPA's system builds them from the file (FPAR 2.0 Implementation Guide, September 2025, Appendix A): each person once, at their age on June 30; sex, race, ethnicity, insurance and English proficiency from their latest visit; income from their latest visit with income and household size, as a percentage of the year's HHS poverty guidelines; the primary method from their latest visit with a method at exit, as OPA's FAQ counts it. Rows are placed by OPA's names for its values (`data/fpar-tables.json`, our map; OPA publishes no crosswalk), and a test fails when OPA lists a method the map doesn't place. Tables 13 and 14 are entered in OPA's portal, and Table 10 is retired.
