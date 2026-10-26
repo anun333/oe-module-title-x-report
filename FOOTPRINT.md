@@ -98,7 +98,7 @@ As written in the source; whether they behave correctly for a given user is not 
 | tests (`tests/`, `phpunit.xml.dist`) | 6 | 1286 |
 | pages (`public/`) | 2 | 204 |
 | tools (`tools/`) | 2 | 174 |
-| module wiring | 5 | 158 |
+| module wiring | 5 | 159 |
 | install SQL (`sql/`) | 1 | 17 |
 
 ## Not covered here
