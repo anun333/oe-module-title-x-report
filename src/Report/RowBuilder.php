@@ -22,6 +22,10 @@ use OpenHealthcare\TitleXReport\Reference\Fpar;
 final class RowBuilder
 {
     public const KEYS = ['facility_id', 'patient_id', 'visit_date', 'birth_date', 'sex'];
+    /** OPA's current coverage types: Source of Payment Typology 3 (government), 5 (private) and 8 (no payment). */
+    public const COVERAGE_GOVERNMENT = '3';
+    public const COVERAGE_PRIVATE = '5';
+    public const COVERAGE_NONE = '8';
     private const NOT_A_LANGUAGE = ['', 'decline_to_specify', 'declne_to_specfy'];
     private const ENGLISH = 'english';
 
@@ -214,16 +218,16 @@ final class RowBuilder
     private function insurance(?array $insurance): array
     {
         if ($insurance === null) {
-            return ['8', $this->fpar->valid('visit_payer', '81') ? '81' : '', null]; // no coverage on the visit date: self-pay
+            return [self::COVERAGE_NONE, $this->fpar->valid('visit_payer', '81') ? '81' : '', null]; // no coverage on the visit date: self-pay
         }
         $sop = trim($insurance['sop']);
         if ($sop === '') {
             return ['', '', ['key' => Problems::NO_PAYER_CODE, 'args' => []]];
         }
         $type = match ($sop[0]) {
-            '1', '2', '3', '4' => '3',
-            '5', '6', '7' => '5',
-            '8' => '8',
+            '1', '2', '3', '4' => self::COVERAGE_GOVERNMENT,
+            '5', '6', '7' => self::COVERAGE_PRIVATE,
+            '8' => self::COVERAGE_NONE,
             default => '',
         };
         return [$type, $this->fpar->valid('visit_payer', $sop) ? $sop : '', $type === '' ? ['key' => Problems::UNKNOWN_COVERAGE, 'args' => [$sop]] : null];

@@ -19,18 +19,30 @@ The **FPAR 2.0** file for the Office of Population Affairs (OPA), from OpenEMR: 
   - visits missing one of the five keys OPA requires (facility, patient, visit date, birth date, sex) are left out of the file and listed, since OPA rejects a whole file over one such row;
   - visits to fix are listed: a Title X visit with no visit record, a method at exit with no "how provided", a method given with a reason for none, an answer OPA doesn't accept, an insurance company with no payer code;
   - OPA's data quality warnings, counted per person at their latest visit: race, ethnicity, income, insurance, English proficiency or the method at exit unknown above OPA's thresholds.
+- **OPA's tables, before you upload:** Tables 1 to 9, 11 and 12 as OPA's system builds them from the file, each person counted once at their age on June 30, with OPA's own checks on them (the age checks for sterilization and vasectomy, the method shares, the unknowns) and every cell that changed by half or more from the year before. OPA compares with last year's submission; the page compares with last year as OpenEMR builds it today.
+- **Two files instead of one,** for a site that reports lab results apart: the encounter file and the lab results file, in OPA's layouts.
 - **Codes** come from OPA's own valid values file (version 4/3/2026), generated into `data/fpar2.json` by `tools/fpar-reference.py`, never typed in. SNOMED CT US Extension codes in OPA's file aren't shipped: where an answer has one, the report writes OPA's LOINC value for the same answer, which OPA accepts (it calls them transition values and has set no end date).
 
 ## Who can open what
 
 The page and the download need `patients/demo` in OpenEMR's access control, as the UDS Report does. The file holds patient chart numbers and birth dates, so the download is posted with the page's CSRF token, and each one is in the audit log with its row count.
 
+## How the tables are read
+
+OPA publishes no crosswalk from its codes to the tables' rows, so `data/fpar-tables.json` places each value by OPA's name for it, following the guide's definition of each row. The readings that were judgement calls:
+
+- OPA's values have one code for injectables (and "Uses depot contraception"), counted as the 3-month injection; nothing reaches the 1-month row.
+- Emergency contraception counts as "Withdrawal or other method" (the guide lists it under no other row). A man relying on his partner's method goes to "Rely on female method(s)" for every method the guide names there, LAM included.
+- "No method" goes by the visit's reason: pregnant or seeking pregnancy (or a pregnancy status of pregnant), abstinence, or any other reason, which includes no reason recorded.
+- Table 9: the instructions count atypical glandular cells (AGC) as HSIL or higher; the guide's Exhibit D places AGC not otherwise specified in row 3 only. The preview follows the instructions.
+- Table 12: every HIV result read as positive, reactive or detected counts as positive; OPA asks for confirmed ones only, so a preliminary rapid positive counts until the record has the confirmed result. Anonymous tests aren't in the record.
+- Income bands go by the whole percent of the guideline, so 100.9 percent is "Below 101%".
+
 ## Not done yet
 
-- Previews of OPA's Tables 1 to 9, 11 and 12.
-- The separate lab file (OPA's other layout); the combined file carries the same results.
-- OPA's checks that compare with the prior year, and the method checks by age (sterilization under 20).
+- Confidential billing: keeping a Title X client's confidential services off a statement that goes to someone else. OpenEMR has no hook for it yet; it's asked for in core as [openemr/openemr#14854](https://github.com/openemr/openemr/issues/14854).
 - Combined chlamydia and gonorrhea tests ordered under a code in neither of OPA's lists count only when their results carry each test's own code.
+- Tables 13 (staffing) and 14 (revenue), which OPA has entered in its portal.
 
 ## Install
 
@@ -42,7 +54,7 @@ composer require anun333/oe-module-title-x-report
 
 The installer plugin places it in `interface/modules/custom_modules/oe-module-title-x-report/`, and Composer brings [openhealthcare-common](https://github.com/anun333/openhealthcare-common) with it. Without Composer, copy this directory there and run `composer install --no-dev` in it, which puts openhealthcare-common in its own `vendor/`; the module stays switched off until it finds that package one way or the other.
 
-Then go to Modules › Manage Modules › Unregistered, and **Register**, **Install** and **Enable** it. Open **Title X Report**, choose the visit categories that are Title X visits, and save.
+Then go to Modules › Manage Modules › Unregistered, and **Register**, **Install** and **Enable** it. Open **Title X Report**, choose the visit categories that are Title X visits and where the clinic is (for the poverty guidelines), and save. The [staff guide](GUIDE.md) takes it from there.
 
 ## Compatibility
 
@@ -62,10 +74,11 @@ python3 -I tools/fpar-reference.py <OPA valid values .xlsx> <OPA sample file .xl
 - OPA, [FPAR 2.0](https://opa.hhs.gov/research-evaluation/title-x-services-research/family-planning-annual-report/fpar2): the Data Elements with Valid Values file (version 4/3/2026), the Sample File (April 2026), the Implementation Guide (September 2025), the Data Quality Checks Overview (December 2025) and the FAQ.
 - 42 CFR part 59 (Title X).
 - The race code ranges are the [UDS Report](https://github.com/anun333/oe-module-uds-report)'s, checked against OpenEMR's race list.
+- The HHS poverty guidelines are the UDS Report's `data/poverty-guidelines.json`, each year and region citing its HHS source.
 
 ## Codes and their terms
 
-The module's code is GPL-3.0-or-later. `data/fpar2.json` holds codes under their owners' terms: LOINC codes and names under LOINC's licence (https://loinc.org/license); SNOMED CT International Edition identifiers and terms from the SNOMED CT Global Patient Set, © International Health Terminology Standards Development Organisation (trading as SNOMED International), under CC BY-ND 4.0 (https://www.snomed.org/gps); CDC Race & Ethnicity and HL7 codes; Source of Payment Typology codes without their names. SNOMED and SNOMED CT are registered trademarks of SNOMED International. Our own maps (`data/race-groups.json`, `data/provider-roles.json`) are CC0.
+The module's code is GPL-3.0-or-later. `data/fpar2.json` holds codes under their owners' terms: LOINC codes and names under LOINC's licence (https://loinc.org/license); SNOMED CT International Edition identifiers and terms from the SNOMED CT Global Patient Set, © International Health Terminology Standards Development Organisation (trading as SNOMED International), under CC BY-ND 4.0 (https://www.snomed.org/gps); CDC Race & Ethnicity and HL7 codes; Source of Payment Typology codes without their names. SNOMED and SNOMED CT are registered trademarks of SNOMED International. Our own maps (`data/race-groups.json`, `data/provider-roles.json`, `data/fpar-tables.json`) are CC0, and `data/poverty-guidelines.json` holds U.S. government figures.
 
 ## Other modules for OpenEMR
 

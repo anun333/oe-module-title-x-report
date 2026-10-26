@@ -21,8 +21,9 @@ final class Fpar
     /**
      * @param list<string>                                                                                     $columns
      * @param array<string, array{question: ?string, values: list<array{system: string, code: string, display: string, transition: bool}>}> $byColumn
+     * @param array<string, list<string>>                                                                      $layouts OPA's sample file's layouts: combined, encounter, lab
      */
-    private function __construct(public readonly string $version, private readonly array $columns, private readonly array $byColumn)
+    private function __construct(public readonly string $version, private readonly array $columns, private readonly array $byColumn, private readonly array $layouts = [])
     {
     }
 
@@ -41,13 +42,46 @@ final class Fpar
             }
             $byColumn[(string)$element['column']] = ['question' => isset($element['question']) ? (string)$element['question'] : null, 'values' => $values];
         }
-        return new self((string)$data['source']['valid_values']['version'], array_map('strval', $data['layouts']['combined']), $byColumn);
+        $layouts = [];
+        foreach ($data['layouts'] as $name => $columns) {
+            $layouts[(string)$name] = array_map('strval', (array)$columns);
+        }
+        return new self((string)$data['source']['valid_values']['version'], $layouts['combined'], $byColumn, $layouts);
     }
 
     /** @return list<string> the combined file's columns, in OPA's sample order */
     public function columns(): array
     {
         return $this->columns;
+    }
+
+    /**
+     * A layout's columns, in OPA's sample order: combined (one file), or encounter and lab (the two files a site
+     * uploads instead when it reports lab results apart).
+     *
+     * @return list<string>
+     */
+    public function layout(string $name): array
+    {
+        return $this->layouts[$name] ?? throw new \InvalidArgumentException("no FPAR layout named $name");
+    }
+
+    /** OPA's name for a column's code, without a SNOMED semantic tag; '' when the code isn't one of the column's. */
+    public function display(string $column, string $code): string
+    {
+        foreach ($this->byColumn[$column]['values'] ?? [] as $v) {
+            if ($v['code'] === $code) {
+                return self::plainName($v['display']);
+            }
+        }
+        return '';
+    }
+
+    /** A name as display() gives it and codeByName() compares it: no semantic tag, single spaces. */
+    public static function plainName(string $name): string
+    {
+        $name = preg_replace('/\s*\((finding|occupation|qualifier value|morphologic abnormality|procedure|regime\/therapy|observable entity|situation|disorder|physical object|product|record artifact)\)\s*$/i', '', $name) ?? $name;
+        return trim(preg_replace('/\s+/', ' ', $name) ?? $name);
     }
 
     public function question(string $column): ?string
@@ -136,7 +170,6 @@ final class Fpar
 
     private static function plain(string $name): string
     {
-        $name = preg_replace('/\s*\((finding|occupation|qualifier value|morphologic abnormality|procedure|regime\/therapy|observable entity|situation|disorder|physical object|product|record artifact)\)\s*$/i', '', $name) ?? $name;
-        return strtolower(trim(preg_replace('/\s+/', ' ', $name) ?? $name));
+        return strtolower(self::plainName($name));
     }
 }

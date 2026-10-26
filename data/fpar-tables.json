@@ -1,0 +1,87 @@
+{
+    "_about": "Our map from FPAR 2.0 rows to OPA's tables (FPAR 2.0 Implementation Guide, September 2025, Appendix A: Tables 1 to 9, 11 and 12), by the names OPA gives its valid values in data/fpar2.json, compared without case or SNOMED semantic tags. OPA publishes no crosswalk from codes to table rows; each placement below follows the guide's definition of the row, and the README lists the readings that were judgement calls. A test fails when a method name in data/fpar2.json isn't placed here. CC0 1.0.",
+    "ageBands": {
+        "users": [
+            {"label": "Under 15", "from": 0, "to": 14},
+            {"label": "15 to 17", "from": 15, "to": 17},
+            {"label": "18 to 19", "from": 18, "to": 19},
+            {"label": "20 to 24", "from": 20, "to": 24},
+            {"label": "25 to 29", "from": 25, "to": 29},
+            {"label": "30 to 34", "from": 30, "to": 34},
+            {"label": "35 to 39", "from": 35, "to": 39},
+            {"label": "40 to 44", "from": 40, "to": 44},
+            {"label": "Over 44", "from": 45, "to": 999}
+        ],
+        "chlamydia": [
+            {"label": "Under 15", "from": 0, "to": 14},
+            {"label": "15 to 17", "from": 15, "to": 17},
+            {"label": "18 to 19", "from": 18, "to": 19},
+            {"label": "20 to 24", "from": 20, "to": 24},
+            {"label": "25 and over", "from": 25, "to": 999}
+        ]
+    },
+    "race": {
+        "rows": ["American Indian or Alaska Native", "Asian", "Black or African American", "Native Hawaiian or Other Pacific Islander", "White", "More than one race", "Unknown/not reported"],
+        "columns": {"race_amindian": 0, "race_asian": 1, "race_black": 2, "race_hpi": 3, "race_white": 4},
+        "ethnicity": {"Hispanic or Latino": 0, "Not Hispanic or Latino": 1}
+    },
+    "income": {
+        "rows": ["Below 101%", "101% to 150%", "151% to 200%", "201% to 250%", "Above 250%", "Unknown/not reported"],
+        "upTo": [100, 150, 200, 250]
+    },
+    "insurance": {
+        "rows": ["Public health insurance covering primary medical care", "Private health insurance covering primary medical care", "Uninsured (no public or private health insurance)", "Unknown/not reported"]
+    },
+    "lep": {
+        "rows": ["LEP users", "Not LEP users", "Unknown/not reported"],
+        "names": {"Not proficient in English": 0, "Proficient in English": 1}
+    },
+    "methods": {
+        "female": [
+            {"label": "Female sterilization", "names": ["Female sterilization"]},
+            {"label": "IUD or IUS", "names": ["Uses hormone releasing intrauterine device contraception", "Uses copper intrauterine device contraception", "Uses intrauterine device contraception", "IUD with Progestin", "IUD copper", "IUD unspecified"]},
+            {"label": "Hormonal implant", "names": ["Subcutaneous contraceptive implant present", "Implantable rod"]},
+            {"label": "1-Month hormonal injection", "names": []},
+            {"label": "3-Month hormonal injection", "names": ["Uses depot contraception", "Injectables"]},
+            {"label": "Oral contraceptive", "names": ["Uses combined oral contraception", "Uses progestogen only oral contraception", "Combined oral contraceptive pills", "Progestin only contraceptive pills"]},
+            {"label": "Contraceptive patch", "names": ["Uses transdermal contraception", "Contraceptive patch"]},
+            {"label": "Vaginal ring", "names": ["Uses vaginal hormone releasing ring", "Vaginal ring"]},
+            {"label": "Cervical cap or diaphragm", "names": ["Uses contraceptive diaphragm", "Diaphragm or cervical cap"]},
+            {"label": "Contraceptive sponge", "names": ["Uses contraceptive sponge", "Sponge"]},
+            {"label": "Female condom", "names": ["Uses a female condom", "Female condom"]},
+            {"label": "Any spermicide or non-spermicidal gel (used alone)", "names": ["Uses spermicidal contraception", "Spermicide", "Contraceptive Gel"]},
+            {"label": "FAM or LAM", "names": ["Fertility awareness-based methods", "Lactational amenorrhea method"]},
+            {"label": "Abstinence", "names": [], "noMethodReason": "abstinence"},
+            {"label": "Withdrawal or other method", "names": ["Uses withdrawal method of contraception", "Withdrawal", "Uses postcoital contraception", "Emergency contraception", "Male relying on female method"]},
+            {"label": "Rely on male method: vasectomy", "names": ["Vasectomy"]},
+            {"label": "Rely on male method: male condom", "names": ["Male condom, device", "Male condom"]},
+            {"label": "No method: pregnant/seeking pregnancy", "names": [], "noMethodReason": "pregnant"},
+            {"label": "No method: other reason", "names": [], "noMethodReason": "other"},
+            {"label": "Unknown/not reported", "names": ["Decline to answer"], "unknown": true}
+        ],
+        "male": [
+            {"label": "Vasectomy", "names": ["Vasectomy"]},
+            {"label": "Male condom", "names": ["Male condom, device", "Male condom"]},
+            {"label": "FAM", "names": ["Fertility awareness-based methods"]},
+            {"label": "Abstinence", "names": [], "noMethodReason": "abstinence"},
+            {"label": "Withdrawal or other method", "names": ["Uses withdrawal method of contraception", "Withdrawal", "Uses postcoital contraception", "Emergency contraception"]},
+            {"label": "Rely on female method(s)", "names": ["Female sterilization", "Uses hormone releasing intrauterine device contraception", "Uses copper intrauterine device contraception", "Uses intrauterine device contraception", "IUD with Progestin", "IUD copper", "IUD unspecified", "Subcutaneous contraceptive implant present", "Implantable rod", "Uses depot contraception", "Injectables", "Uses combined oral contraception", "Uses progestogen only oral contraception", "Combined oral contraceptive pills", "Progestin only contraceptive pills", "Uses transdermal contraception", "Contraceptive patch", "Uses vaginal hormone releasing ring", "Vaginal ring", "Uses contraceptive diaphragm", "Diaphragm or cervical cap", "Uses contraceptive sponge", "Sponge", "Uses a female condom", "Female condom", "Uses spermicidal contraception", "Spermicide", "Contraceptive Gel", "Lactational amenorrhea method", "Male relying on female method"]},
+            {"label": "No method: partner pregnant/seeking pregnancy", "names": [], "noMethodReason": "pregnant"},
+            {"label": "No method: other reason", "names": [], "noMethodReason": "other"},
+            {"label": "Unknown/not reported", "names": ["Decline to answer"], "unknown": true}
+        ],
+        "noMethod": ["No contraceptive precautions", "None"],
+        "reasons": {
+            "pregnant": ["Seeking pregnancy"],
+            "abstinence": ["Abstinence"],
+            "other": ["Other", "Sterility", "Same sex partner", "Sterile for non-contraceptive reasons"]
+        },
+        "pregnant": ["Pregnancy", "Pregnant"]
+    },
+    "pap": {
+        "ascOrHigher": ["Atypical squamous cells, cannot exclude high-grade squamous intraepithelial lesion", "Atypical squamous cells of uncertain significance", "Low-grade squamous intraepithelial lesion", "High-grade squamous intraepithelial lesion", "Squamous cell carcinoma", "Atypical glandular cells on cervical Papanicolaou smear", "Atypical glandular cells, favor neoplastic", "Adenocarcinoma in situ"],
+        "hsilOrHigher": ["High-grade squamous intraepithelial lesion", "Squamous cell carcinoma", "Atypical glandular cells on cervical Papanicolaou smear", "Atypical glandular cells, favor neoplastic", "Adenocarcinoma in situ"]
+    },
+    "hivPositive": ["Positive", "Reactive", "Detected"],
+    "testTypes": {"pap": "Pap smear", "hpv": "HPV", "chlamydia": "Chlamydia", "gonorrhea": "Neisseria gonorrhoeae", "hiv": "HIV", "syphilis": "Syphilis"}
+}

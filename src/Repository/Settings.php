@@ -17,6 +17,7 @@ declare(strict_types=1);
 namespace OpenHealthcare\TitleXReport\Repository;
 
 use OpenEMR\Common\Database\QueryUtils;
+use OpenHealthcare\TitleXReport\Reference\PovertyGuidelines;
 
 final class Settings
 {
@@ -32,11 +33,19 @@ final class Settings
         return $this->ids('facilities');
     }
 
+    /** Which HHS poverty guidelines Table 4's preview uses: contiguous (the 48 states and DC), alaska or hawaii. */
+    public function region(): string
+    {
+        $row = QueryUtils::fetchRecords('SELECT value FROM title_x_report_setting WHERE name = ?', ['region'])[0] ?? null;
+        $region = json_decode((string)($row['value'] ?? '""'), true);
+        return is_string($region) && in_array($region, PovertyGuidelines::REGIONS, true) ? $region : PovertyGuidelines::REGIONS[0];
+    }
+
     /**
      * @param list<int> $categories
      * @param list<int> $facilities
      */
-    public function save(array $categories, array $facilities, int $userId): void
+    public function save(array $categories, array $facilities, string $region, int $userId): void
     {
         foreach (['categories' => $categories, 'facilities' => $facilities] as $name => $ids) {
             QueryUtils::sqlStatementThrowException(
@@ -44,6 +53,10 @@ final class Settings
                 [$name, json_encode(array_values(array_unique(array_map('intval', $ids)))), $userId]
             );
         }
+        QueryUtils::sqlStatementThrowException(
+            'REPLACE INTO title_x_report_setting (name, value, updated_by) VALUES (?, ?, ?)',
+            ['region', json_encode(in_array($region, PovertyGuidelines::REGIONS, true) ? $region : PovertyGuidelines::REGIONS[0]), $userId]
+        );
     }
 
     /** @return list<int> */

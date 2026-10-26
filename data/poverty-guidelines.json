@@ -1,0 +1,47 @@
+{
+    "about": "HHS poverty guidelines, for the preview of OPA's Table 4 (users by income as a percentage of the guidelines). A family's guideline is firstPerson, plus eachAdditional for every person after the first. region is contiguous (the 48 contiguous states and DC), alaska or hawaii. Copied from the UDS Report's data/poverty-guidelines.json, which copies each year's figures from the HHS/ASPE publication and cites it in source. A row whose figures are null is still to be filled in: the preview shows that year and region as not loaded, and never estimates. OPA's system computes Table 4 itself from the file's income and household size.",
+    "guidelines": [
+        {
+            "year": 2026,
+            "region": "contiguous",
+            "firstPerson": 15960,
+            "eachAdditional": 5680,
+            "source": "HHS poverty guidelines, Federal Register, January 15, 2026"
+        },
+        {
+            "year": 2026,
+            "region": "alaska",
+            "firstPerson": 19950,
+            "eachAdditional": 7100,
+            "source": "HHS poverty guidelines, Federal Register, January 15, 2026"
+        },
+        {
+            "year": 2026,
+            "region": "hawaii",
+            "firstPerson": 18360,
+            "eachAdditional": 6530,
+            "source": "HHS poverty guidelines, Federal Register, January 15, 2026"
+        },
+        {
+            "year": 2025,
+            "region": "contiguous",
+            "firstPerson": 15650,
+            "eachAdditional": 5500,
+            "source": "HHS/ASPE 2025 poverty guidelines"
+        },
+        {
+            "year": 2025,
+            "region": "alaska",
+            "firstPerson": null,
+            "eachAdditional": null,
+            "source": null
+        },
+        {
+            "year": 2025,
+            "region": "hawaii",
+            "firstPerson": null,
+            "eachAdditional": null,
+            "source": null
+        }
+    ]
+}
