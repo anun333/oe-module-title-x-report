@@ -19,12 +19,19 @@ declare(strict_types=1);
 namespace OpenHealthcare\TitleXReport\Repository;
 
 use OpenEMR\Common\Database\QueryUtils;
+use OpenHealthcare\Common\QuestionnaireStatus;
 use OpenHealthcare\TitleXReport\Report\Visit;
 use OpenHealthcare\TitleXReport\Report\VisitRecord;
 
 final class EncounterSource
 {
     private const CHUNK = 500;
+
+    /**
+     * patient_data columns the visit query reads that a site can lack: interpreter_needed only from 7.0.4,
+     * and the Layout Editor can drop an empty stock column (#14742).
+     */
+    public const OPTIONAL_PATIENT_COLUMNS = ['language', 'interpreter_needed', 'ethnicity', 'race', 'monthly_income', 'family_size'];
 
     /**
      * @param list<int> $categories visit categories counted as Title X (openemr_postcalendar_categories.pc_catid)
@@ -54,9 +61,10 @@ final class EncounterSource
             $facilityFilter = 'AND fe.facility_id IN (' . self::marks($facilities) . ')';
             array_push($binds, ...$facilities);
         }
+        $patient = self::patientSelect($this->presentColumns('patient_data', self::OPTIONAL_PATIENT_COLUMNS));
         $rows = QueryUtils::fetchRecords(
             "SELECT fe.encounter, fe.pid, fe.date, fe.facility_id, fe.pc_catid, f.facility_npi, u.npi, u.taxonomy,
-                    pd.pubpid, pd.DOB, pd.sex, pd.language, pd.interpreter_needed, pd.ethnicity, pd.race, pd.monthly_income, pd.family_size
+                    pd.pubpid, pd.DOB, pd.sex, $patient
                FROM form_encounter AS fe
                JOIN patient_data AS pd ON pd.pid = fe.pid
                LEFT JOIN facility AS f ON f.id = fe.facility_id
@@ -142,25 +150,38 @@ final class EncounterSource
 
     /**
      * The year's visit records by encounter: questionnaire responses carrying FPAR's questions, confirmed by
-     * reading them (the LIKE only narrows what's read).
+     * reading them (the LIKE only narrows what's read), and counted by QuestionnaireStatus.
+     *
+     * A response's visit is its questionnaire form's own (forms.encounter); without a form row, the visit the
+     * response names when that is one of the patient's; else the patient's first visit on the day it was saved.
+     * Before 8.5.0 (#14654) core stored only the leading digits of the visit's uuid, or 0, in
+     * questionnaire_response.encounter, and rows saved before an upgrade keep that, so the stored number is
+     * trusted only after the form's. The year is the visit's.
      *
      * @return array<int, array<string, string>>
      */
     private function visitRecords(string $from, string $to): array
     {
+        [$counted, $countedBinds] = QuestionnaireStatus::condition('qr');
         $rows = QueryUtils::fetchRecords(
-            "SELECT qr.encounter, qr.create_time, COALESCE(NULLIF(qr.questionnaire, ''), rep.questionnaire) AS questionnaire_json, qr.questionnaire_response AS response_json
+            "SELECT fe.encounter, qr.create_time, COALESCE(NULLIF(qr.questionnaire, ''), rep.questionnaire) AS questionnaire_json, qr.questionnaire_response AS response_json
                FROM questionnaire_response AS qr
-               JOIN form_encounter AS fe ON fe.encounter = qr.encounter AND fe.pid = qr.patient_id
                LEFT JOIN questionnaire_repository AS rep ON rep.id = qr.questionnaire_foreign_id
-              WHERE qr.encounter > 0 AND fe.date >= ? AND fe.date < ?
+               LEFT JOIN form_questionnaire_assessments AS fqa ON fqa.response_id = qr.response_id AND fqa.pid = qr.patient_id
+               LEFT JOIN forms AS fo ON fo.form_id = fqa.id AND fo.pid = fqa.pid AND fo.formdir = 'questionnaire_assessments' AND fo.deleted = 0
+               LEFT JOIN form_encounter AS named ON qr.encounter > 0 AND named.encounter = qr.encounter AND named.pid = qr.patient_id
+               JOIN form_encounter AS fe ON fe.pid = qr.patient_id AND fe.encounter = COALESCE(fo.encounter, named.encounter, (
+                    SELECT MIN(sd.encounter) FROM form_encounter AS sd
+                     WHERE sd.pid = qr.patient_id AND sd.date >= DATE(qr.create_time) AND sd.date < DATE(qr.create_time) + INTERVAL 1 DAY))
+              WHERE fe.date >= ? AND fe.date < ?
                 AND COALESCE(NULLIF(qr.questionnaire, ''), rep.questionnaire) LIKE ?
                 AND NOT EXISTS (
-                    SELECT 1 FROM form_questionnaire_assessments AS fqa
-                    JOIN forms AS f ON f.form_id = fqa.id AND f.pid = fqa.pid AND f.formdir = 'questionnaire_assessments'
-                    WHERE fqa.response_id = qr.response_id AND f.deleted = 1)
-              ORDER BY qr.create_time",
-            [$from, $to, '%86651-7%']
+                    SELECT 1 FROM form_questionnaire_assessments AS dq
+                    JOIN forms AS df ON df.form_id = dq.id AND df.pid = dq.pid AND df.formdir = 'questionnaire_assessments'
+                    WHERE dq.response_id = qr.response_id AND df.deleted = 1)
+                AND $counted
+              ORDER BY qr.create_time, qr.id",
+            [$from, $to, '%86651-7%', ...$countedBinds]
         );
         $out = [];
         foreach ($rows as $r) {
@@ -282,7 +303,8 @@ final class EncounterSource
     }
 
     /**
-     * Sliding Fee's assessments, when that module is installed.
+     * Sliding Fee's assessments, when that module is installed: a read of another openhealthcare module's table,
+     * accepted on the condition that it is off without the table (the column check below), so Title X works alone.
      *
      * @param list<int> $pids
      * @return array<int, list<array<string, mixed>>>
@@ -328,6 +350,43 @@ final class EncounterSource
             }
         }
         return $found === null ? null : $shape($found);
+    }
+
+    /**
+     * The optional patient columns as the visit query selects them: the column where the site has it, else NULL
+     * under its name, so the rest of the report reads a missing column as an empty answer.
+     *
+     * @param list<string> $present
+     */
+    public static function patientSelect(array $present): string
+    {
+        return implode(', ', array_map(
+            fn(string $column): string => in_array($column, $present, true) ? "pd.$column" : "NULL AS $column",
+            self::OPTIONAL_PATIENT_COLUMNS
+        ));
+    }
+
+    /**
+     * Which of these columns the table has, in one lookup.
+     *
+     * @param list<string> $columns
+     * @return list<string>
+     */
+    private function presentColumns(string $table, array $columns): array
+    {
+        $rows = QueryUtils::fetchRecords(
+            'SELECT column_name AS name FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = ? AND column_name IN ('
+                . implode(', ', array_fill(0, count($columns), '?')) . ')',
+            [$table, ...$columns]
+        );
+        $present = [];
+        foreach ($rows as $row) {
+            $name = $row['name'] ?? $row['NAME'] ?? $row['COLUMN_NAME'] ?? null;
+            if (is_string($name) && in_array($name, $columns, true)) {
+                $present[] = $name;
+            }
+        }
+        return $present;
     }
 
     private function hasColumn(string $table, string $column): bool
