@@ -56,6 +56,8 @@ The installer plugin places it in `interface/modules/custom_modules/oe-module-ti
 
 Then go to Modules › Manage Modules › Unregistered, and **Register**, **Install** and **Enable** it. Open **Title X Report**, choose the visit categories that are Title X visits and where the clinic is (for the poverty guidelines), and save. The [staff guide](GUIDE.md) takes it from there.
 
+**Manual installs:** if you copy modules in by hand rather than through Composer, every module's own `vendor/` must hold the same version of openhealthcare-common. OpenEMR loads the library once, from the first module that registers it, so an older copy in one module is what every module gets.
+
 ## Compatibility
 
 Written for OpenEMR 7.0 and later through [openhealthcare-common](https://github.com/anun333/openhealthcare-common)'s compatibility layer; its bootstrap never stops a page on any version. Checked end to end on 8.4.1 and master, and on fresh official 7.0.2 and 8.5.0 installs with its pages loaded and its forms posted (from 0.1.1: 0.1.0's forms stopped on 7.0.x).
@@ -78,7 +80,7 @@ python3 -I tools/fpar-reference.py <OPA valid values .xlsx> <OPA sample file .xl
 
 ## Codes and their terms
 
-The module's code is GPL-3.0-or-later. `data/fpar2.json` holds codes under their owners' terms: LOINC codes and names under LOINC's licence (https://loinc.org/license); SNOMED CT International Edition identifiers and terms from the SNOMED CT Global Patient Set, © International Health Terminology Standards Development Organisation (trading as SNOMED International), under CC BY-ND 4.0 (https://www.snomed.org/gps); CDC Race & Ethnicity and HL7 codes; Source of Payment Typology codes without their names. SNOMED and SNOMED CT are registered trademarks of SNOMED International. Our own maps (`data/race-groups.json`, `data/provider-roles.json`, `data/fpar-tables.json`) are CC0, and `data/poverty-guidelines.json` holds U.S. government figures.
+The module's code is GPL-3.0-or-later. `data/fpar2.json` holds codes under their owners' terms: LOINC codes and names under LOINC's licence (https://loinc.org/license); SNOMED CT International Edition identifiers and terms from the SNOMED CT Global Patient Set, © International Health Terminology Standards Development Organisation (trading as SNOMED International), under CC BY-ND 4.0 (https://www.snomed.org/gps); CDC Race & Ethnicity and HL7 codes; Source of Payment Typology codes without their names. SNOMED and SNOMED CT are registered trademarks of SNOMED International. Our own maps (`data/race-groups.json`, `data/provider-roles.json`, `data/fpar-tables.json`) are dedicated to the public domain under CC0 1.0 ([LICENSES/CC0-1.0.txt](LICENSES/CC0-1.0.txt)), and `data/poverty-guidelines.json` holds U.S. government figures.
 
 LOINC's notice, as its licence asks of LOINC content passed on:
 
