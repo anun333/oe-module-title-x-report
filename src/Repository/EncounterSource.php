@@ -42,7 +42,7 @@ final class EncounterSource
     {
         $from = sprintf('%04d-01-01', $year);
         $to = sprintf('%04d-01-01', $year + 1);
-        $records = $this->visitRecords($from, $to);
+        $records = $this->visitRecords($from, $to, $categories, $facilities);
         $where = [];
         $binds = [$from, $to];
         if ($categories !== []) {
@@ -153,16 +153,22 @@ final class EncounterSource
      * reading them (the LIKE only narrows what's read), and counted by QuestionnaireStatus.
      *
      * A response's visit is its questionnaire form's own (forms.encounter); without a form row, the visit the
-     * response names when that is one of the patient's; else the patient's first visit on the day it was saved.
+     * response names when that is one of the patient's; else the patient's visit on the day it was saved, a
+     * Title X category's first, then one at a Title X facility, then the first that day (a same-day dental
+     * visit mustn't take the Title X visit's record).
      * Before 8.5.0 (#14654) core stored only the leading digits of the visit's uuid, or 0, in
      * questionnaire_response.encounter, and rows saved before an upgrade keep that, so the stored number is
      * trusted only after the form's. The year is the visit's.
      *
+     * @param list<int> $categories as visits() takes them
+     * @param list<int> $facilities as visits() takes them
      * @return array<int, array<string, string>>
      */
-    private function visitRecords(string $from, string $to): array
+    private function visitRecords(string $from, string $to, array $categories, array $facilities): array
     {
         [$counted, $countedBinds] = QuestionnaireStatus::condition('qr');
+        $prefer = ($categories === [] ? '' : 'sd.pc_catid IN (' . self::marks($categories) . ') DESC, ')
+            . ($facilities === [] ? '' : 'sd.facility_id IN (' . self::marks($facilities) . ') DESC, ');
         $rows = QueryUtils::fetchRecords(
             "SELECT fe.encounter, qr.create_time, COALESCE(NULLIF(qr.questionnaire, ''), rep.questionnaire) AS questionnaire_json, qr.questionnaire_response AS response_json
                FROM questionnaire_response AS qr
@@ -171,8 +177,9 @@ final class EncounterSource
                LEFT JOIN forms AS fo ON fo.form_id = fqa.id AND fo.pid = fqa.pid AND fo.formdir = 'questionnaire_assessments' AND fo.deleted = 0
                LEFT JOIN form_encounter AS named ON qr.encounter > 0 AND named.encounter = qr.encounter AND named.pid = qr.patient_id
                JOIN form_encounter AS fe ON fe.pid = qr.patient_id AND fe.encounter = COALESCE(fo.encounter, named.encounter, (
-                    SELECT MIN(sd.encounter) FROM form_encounter AS sd
-                     WHERE sd.pid = qr.patient_id AND sd.date >= DATE(qr.create_time) AND sd.date < DATE(qr.create_time) + INTERVAL 1 DAY))
+                    SELECT sd.encounter FROM form_encounter AS sd
+                     WHERE sd.pid = qr.patient_id AND sd.date >= DATE(qr.create_time) AND sd.date < DATE(qr.create_time) + INTERVAL 1 DAY
+                     ORDER BY {$prefer}sd.encounter LIMIT 1))
               WHERE fe.date >= ? AND fe.date < ?
                 AND COALESCE(NULLIF(qr.questionnaire, ''), rep.questionnaire) LIKE ?
                 AND NOT EXISTS (
@@ -181,7 +188,7 @@ final class EncounterSource
                     WHERE dq.response_id = qr.response_id AND df.deleted = 1)
                 AND $counted
               ORDER BY qr.create_time, qr.id",
-            [$from, $to, '%86651-7%', ...$countedBinds]
+            [...$categories, ...$facilities, $from, $to, '%86651-7%', ...$countedBinds]
         );
         $out = [];
         foreach ($rows as $r) {

@@ -94,8 +94,8 @@ As written in the source; whether they behave correctly for a given user is not 
 | part | files | lines |
 |---|---|---|
 | data (`data/`, read at runtime) | 3 | 4890 |
-| PHP logic (`src/`) | 14 | 1494 |
-| tests (`tests/`, `phpunit.xml.dist`) | 6 | 1276 |
+| PHP logic (`src/`) | 14 | 1501 |
+| tests (`tests/`, `phpunit.xml.dist`) | 6 | 1286 |
 | pages (`public/`) | 2 | 204 |
 | tools (`tools/`) | 2 | 174 |
 | module wiring | 5 | 158 |

@@ -95,9 +95,19 @@ namespace OpenHealthcare\TitleXReport\Tests {
             self::assertStringContainsString("fo.formdir = 'questionnaire_assessments' AND fo.deleted = 0", $sql);
             self::assertStringContainsString('COALESCE(fo.encounter, named.encounter, (', $sql, 'the form first, then the stored number, then the day');
             self::assertStringContainsString('named.pid = qr.patient_id', $sql, 'a stored number counts only as one of the patient\'s visits');
-            self::assertStringContainsString('SELECT MIN(sd.encounter) FROM form_encounter AS sd', $sql);
+            self::assertStringContainsString('ORDER BY sd.pc_catid IN (?) DESC, sd.encounter LIMIT 1', $sql, 'a Title X visit that day first, then the first visit');
+            self::assertSame(5, self::recordsQuery()['binds'][0], 'the Title X category is bound first');
             self::assertStringContainsString('WHERE fe.date >= ? AND fe.date < ?', $sql, 'the year is the visit\'s');
             self::assertStringContainsString('df.deleted = 1', $sql, 'a deleted form\'s response stays out');
+        }
+
+        public function testTheSameDayVisitPrefersATitleXCategoryThenATitleXFacility(): void
+        {
+            (new EncounterSource())->visits(2026, [5, 6], [3]);
+            $query = self::recordsQuery();
+            self::assertStringContainsString('ORDER BY sd.pc_catid IN (?, ?) DESC, sd.facility_id IN (?) DESC, sd.encounter LIMIT 1', $query['sql']);
+            self::assertSame([5, 6, 3], array_slice($query['binds'], 0, 3));
+            self::assertSame(substr_count($query['sql'], '?'), count($query['binds']), 'one bind per placeholder');
         }
 
         public function testBeforeAnyCompletedResponseEveryStatusButEnteredInErrorCounts(): void
@@ -106,7 +116,7 @@ namespace OpenHealthcare\TitleXReport\Tests {
             (new EncounterSource())->visits(2026, [5], []);
             $query = self::recordsQuery();
             self::assertStringContainsString("AND COALESCE(`qr`.`status`, '') <> 'entered-in-error'", $query['sql']);
-            self::assertSame(['2026-01-01', '2027-01-01', '%86651-7%'], $query['binds']);
+            self::assertSame([5, '2026-01-01', '2027-01-01', '%86651-7%'], $query['binds']);
             self::assertSame(substr_count($query['sql'], '?'), count($query['binds']), 'one bind per placeholder');
         }
 
@@ -116,7 +126,7 @@ namespace OpenHealthcare\TitleXReport\Tests {
             (new EncounterSource())->visits(2026, [5], []);
             $query = self::recordsQuery();
             self::assertStringContainsString("IN ('completed', 'amended') OR", $query['sql']);
-            self::assertSame(['2026-01-01', '2027-01-01', '%86651-7%', '2026-11-02 09:15:00'], $query['binds']);
+            self::assertSame([5, '2026-01-01', '2027-01-01', '%86651-7%', '2026-11-02 09:15:00'], $query['binds']);
             self::assertSame(substr_count($query['sql'], '?'), count($query['binds']), 'one bind per placeholder');
         }
     }
