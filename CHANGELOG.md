@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.2.1 (unreleased)
+## 0.2.1 (2026-10-26)
 
 - **LOINC's notice** in the README, as LOINC's licence asks of the LOINC codes and names `data/fpar2.json` passes on. It only linked the licence before.
 
