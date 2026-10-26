@@ -120,14 +120,37 @@ namespace OpenHealthcare\TitleXReport\Tests {
             self::assertSame(substr_count($query['sql'], '?'), count($query['binds']), 'one bind per placeholder');
         }
 
+        /** A project directory whose questionnaire runtime declares this version, as OpenEMR's file does. */
+        private static function runtime(string $version): string
+        {
+            $dir = sys_get_temp_dir() . '/tx-runtime-' . bin2hex(random_bytes(6));
+            $file = "$dir/" . \OpenHealthcare\Common\QuestionnaireRuntime::PATH;
+            mkdir(dirname($file), 0777, true);
+            file_put_contents($file, "        version: '$version',\n");
+            return $dir;
+        }
+
+        public function testOnAnOlderRuntimeACompletedResponseChangesNothing(): void
+        {
+            $GLOBALS['fileroot'] = self::runtime('0.2.0');
+            QueryUtils::$answer = fn(string $sql): array => str_contains($sql, 'MIN(COALESCE(`last_updated`') ? [['since' => '2026-11-02 09:15:00']] : [];
+            (new EncounterSource())->visits(2026, [5], []);
+            $query = self::recordsQuery();
+            self::assertStringContainsString("AND COALESCE(`qr`.`status`, '') <> 'entered-in-error'", $query['sql']);
+            self::assertSame([5, '2026-01-01', '2027-01-01', '%86651-7%'], $query['binds'], 'no moment: the old runtime saves every record in-progress');
+            unset($GLOBALS['fileroot']);
+        }
+
         public function testAfterTheFirstCompletedResponseOnlyFinishedOnesSavedLaterCount(): void
         {
+            $GLOBALS['fileroot'] = self::runtime('0.4.0');
             QueryUtils::$answer = fn(string $sql): array => str_contains($sql, 'MIN(COALESCE(`last_updated`') ? [['since' => '2026-11-02 09:15:00']] : [];
             (new EncounterSource())->visits(2026, [5], []);
             $query = self::recordsQuery();
             self::assertStringContainsString("IN ('completed', 'amended') OR", $query['sql']);
             self::assertSame([5, '2026-01-01', '2027-01-01', '%86651-7%', '2026-11-02 09:15:00'], $query['binds']);
             self::assertSame(substr_count($query['sql'], '?'), count($query['binds']), 'one bind per placeholder');
+            unset($GLOBALS['fileroot']);
         }
     }
 }
