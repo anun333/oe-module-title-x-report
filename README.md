@@ -58,6 +58,10 @@ Then go to Modules › Manage Modules › Unregistered, and **Register**, **Inst
 
 **Manual installs:** if you copy modules in by hand rather than through Composer, every module's own `vendor/` must hold the same version of openhealthcare-common. OpenEMR loads the library once, from the first module that registers it, so an older copy in one module is what every module gets.
 
+### An index on a core table
+
+Installing or upgrading adds one index to a core table: `response_id` on `form_questionnaire_assessments (response_id(64))`. The visit-record lookup joins on that column, which core leaves without an index, and on years of data it read every assessment form for every response: on a test copy of a mid-size clinic (20,000 patients, 200,000 visits, 18,609 questionnaire responses) the 2025 report took 203 s before and 3.4 s after, with the same output. The UDS and CCBHC Report modules add the same index under the same name, so it's created once; if core adds an index named `response_id` itself, the module's step is skipped. Removing the module leaves the index in place; it changes no data.
+
 ## Compatibility
 
 Written for OpenEMR 7.0 and later through [openhealthcare-common](https://github.com/anun333/openhealthcare-common)'s compatibility layer; its bootstrap never stops a page on any version. Checked end to end on 8.4.1 and master, and on fresh official 7.0.2 and 8.5.0 installs with its pages loaded and its forms posted (from 0.1.1: 0.1.0's forms stopped on 7.0.x).
