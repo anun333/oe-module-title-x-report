@@ -1,6 +1,6 @@
 # Title X Report
 
-> **Status: 0.2.1, a pre-release.** Tested on OpenEMR 8.4.1 and master with synthetic data only. Check the file against your own records before you upload it.
+> **Status: 0.2.2, a pre-release.** Tested on OpenEMR 8.4.1 and master with synthetic data only. Check the file against your own records before you upload it.
 
 The **FPAR 2.0** file for the Office of Population Affairs (OPA), from OpenEMR: one row per family planning visit in the calendar year, with the column names OPA's upload maps by and the codes OPA accepts. A Title X grant recipient uploads it to the FPAR system; a subrecipient sends it to its grant recipient.
 

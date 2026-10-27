@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.2.2 (unreleased)
+## 0.2.2 (2026-10-26)
 
 - **Much faster on years of data: an index on core's `form_questionnaire_assessments.response_id`.** The visit-record lookup joins on that column, which core leaves unindexed, so it read every assessment form for every response. On a test copy of a mid-size clinic (20,000 patients, 200,000 visits, 18,609 questionnaire responses including 3,225 visit records, MariaDB 12.3.3), the 2025 report went from 203 s to 3.4 s, with the same output. The index is added on install and on upgrade (`sql/0_2_1-to-0_2_2_upgrade.sql`), shared by name with the UDS and CCBHC Report modules, so it's made once.
 - **Pages are announced in your language.** Each page now declares the signed-in user's OpenEMR language and its direction instead of English, so a screen reader reads the translated text in that language. It comes from openhealthcare-common 1.4.0, which this version requires. If another module's older copy of the library loads first on a site that installs by hand, the pages say English, as before, rather than stop.
