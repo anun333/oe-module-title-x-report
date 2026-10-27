@@ -21,6 +21,7 @@ The **FPAR 2.0** file for the Office of Population Affairs (OPA), from OpenEMR: 
   - OPA's data quality warnings, counted per person at their latest visit: race, ethnicity, income, insurance, English proficiency or the method at exit unknown above OPA's thresholds.
 - **OPA's tables, before you upload:** Tables 1 to 9, 11 and 12 as OPA's system builds them from the file, each person counted once at their age on June 30, with OPA's own checks on them (the age checks for sterilization and vasectomy, the method shares, the unknowns) and every cell that changed by half or more from the year before. OPA compares with last year's submission; the page compares with last year as OpenEMR builds it today.
 - **Two files instead of one,** for a site that reports lab results apart: the encounter file and the lab results file, in OPA's layouts.
+- **Confidential visits, before a claim or a statement exposes them:** a site names the visit categories it uses for confidential services, and the [Staff Worklist](https://github.com/anun333/oe-module-staff-worklist) gets a **Confidential visits** tab for billing staff: a confidential visit queued or billed to insurance (the policyholder may see an explanation of benefits), and one with a balance whose statement would go to a guardian. The categories are the site's answer because core has none: `form_encounter.sensitivity` is access control, who may see a visit, and is only passed on so the Worklist shows the row to the users core allows. [Revenue Cycle](https://github.com/anun333/oe-module-revenue-cycle) reads the same categories and leaves its two claim checks off those visits.
 - **Codes** come from OPA's own valid values file (version 4/3/2026), generated into `data/fpar2.json` by `tools/fpar-reference.py`, never typed in. SNOMED CT US Extension codes in OPA's file aren't shipped: where an answer has one, the report writes OPA's LOINC value for the same answer, which OPA accepts (it calls them transition values and has set no end date).
 
 ## Who can open what
@@ -40,7 +41,7 @@ OPA publishes no crosswalk from its codes to the tables' rows, so `data/fpar-tab
 
 ## Not done yet
 
-- Confidential billing: keeping a Title X client's confidential services off a statement that goes to someone else. OpenEMR has no hook for it yet; it's asked for in core as [openemr/openemr#14854](https://github.com/openemr/openemr/issues/14854).
+- Leaving a confidential visit off a statement automatically: the Worklist tab asks staff to hold that statement, since OpenEMR has no hook to leave one visit out. It's asked for in core as [openemr/openemr#14854](https://github.com/openemr/openemr/issues/14854).
 - Combined chlamydia and gonorrhea tests ordered under a code in neither of OPA's lists count only when their results carry each test's own code.
 - Tables 13 (staffing) and 14 (revenue), which OPA has entered in its portal.
 

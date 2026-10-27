@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.3.0 (unreleased)
+
+- **Confidential visits, before a claim or a statement exposes them.** Under **Which visits count**, a new **Confidential services** setting names the visit categories you use for confidential services (none until you pick them). The Staff Worklist (0.8.0 or later) then has a **Confidential visits** tab for billing staff, with visits from the last year in those categories:
+  - **queued or billed to insurance:** the policyholder may see the claim, so check the client was told and agreed (42 CFR 59.10(a)). A claim still queued is listed first, since it can still be taken back. The row never names a payer.
+  - **a balance whose statement would go to someone else:** to the guardian on Demographics, as OpenEMR 8.5.0 and later address statements, or, before 8.5.0, when a guardian is on file. Hold that statement or bill the client directly (42 CFR 59.10).
+
+  Each row is dismissed on its own, with a reason. `form_encounter.sensitivity` isn't used to decide what is confidential: it's OpenEMR's access control for who may see a visit, and is only passed on so the Worklist shows the row to the users allowed to see the visit.
+- **Requires openhealthcare-common 1.5.0,** whose shared Worklist contract the tab is built on. On a manual install where another module's older copy of the library loads first, the tab is left out rather than stop the page.
+
 ## 0.2.2 (2026-10-26)
 
 - **Much faster on years of data: an index on core's `form_questionnaire_assessments.response_id`.** The visit-record lookup joins on that column, which core leaves unindexed, so it read every assessment form for every response. On a test copy of a mid-size clinic (20,000 patients, 200,000 visits, 18,609 questionnaire responses including 3,225 visit records, MariaDB 12.3.3), the 2025 report went from 203 s to 3.4 s, with the same output. The index is added on install and on upgrade (`sql/0_2_1-to-0_2_2_upgrade.sql`), shared by name with the UDS and CCBHC Report modules, so it's made once.

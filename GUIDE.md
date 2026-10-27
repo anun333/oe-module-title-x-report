@@ -12,8 +12,9 @@ The module builds the FPAR 2.0 file and shows the tables OPA will build from it;
 
 1. Under **Visit categories**, tick the categories that are Title X visits. A visit with a Title X visit record counts whatever its category.
 2. Under **Facilities in the project**, tick the facilities in your Title X project, or none to count every facility.
-3. Under **Poverty guidelines for Table 4**, choose where the clinic is: the 48 contiguous states and DC, Alaska or Hawaii.
-4. Choose **Save**.
+3. Under **Confidential services**, tick the visit categories you use for confidential services, or none to leave the Worklist tab below off.
+4. Under **Poverty guidelines for Table 4**, choose where the clinic is: the 48 contiguous states and DC, Alaska or Hawaii.
+5. Choose **Save**.
 
 OPA leaves the definition of a family planning visit to each project, which is why it is a setting. Change it only when your project changes: the comparison with last year uses today's settings for both years.
 
@@ -48,6 +49,19 @@ These are OPA's Tables 1 to 9, 11 and 12, built the way OPA's system builds them
 - Or choose **Encounter file** and **Lab results file** for the two files a site uploads when it reports lab results apart. The lab results file has one row per test result; OPA asks a site that does this to send every result in it.
 
 Upload the files as they are. Opening and saving them in a spreadsheet program changes dates and long codes, which OPA warns about. Each download is written to OpenEMR's audit log with its row count.
+
+## Billing staff: confidential visits
+
+### Keep a confidential visit from reaching someone else
+
+*Where:* the Staff Worklist, the **Confidential visits** tab. It needs the Staff Worklist module and the acct/bill permission, and lists visits from the last year in the categories ticked under **Confidential services**.
+
+Title X asks that "Reasonable efforts to collect charges without jeopardizing client confidentiality must be made" (42 CFR 59.10(a)). Two things can break that, and each makes its own row:
+
+- **Confidential visit queued to bill insurance**, or **Confidential visit billed to insurance**: the policyholder may see the claim on an explanation of benefits. Check the client was told and agreed to bill their insurance. While the claim is only queued, you can still take it out of the Billing Manager before it's sent. The row never names a payer.
+- **Confidential visit with a balance: statements go to the guardian** (OpenEMR 8.5.0 and later, which address statements to the guardian on Demographics), or **Confidential visit with a balance: a guardian is on file** (older versions). Hold the statement for this visit or bill the client directly. For a minor, Title X staff may not notify a parent or guardian of the services (42 CFR 59.10(b)).
+
+Choose **Open the visit** to see it. Once it's handled, dismiss the row with a reason, which the Worklist logs; each row is dismissed on its own.
 
 ## Front desk and clinicians: what the report reads
 

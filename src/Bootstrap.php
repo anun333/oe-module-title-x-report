@@ -1,7 +1,8 @@
 <?php
 
 /**
- * What Title X Report adds to OpenEMR: a menu entry for users with the access it needs.
+ * What Title X Report adds to OpenEMR: a menu entry for users with the access it needs, and a "Confidential visits"
+ * tab in the Staff Worklist for billing staff.
  *
  * @package   OpenEMR
  * @link      https://www.open-emr.org
@@ -14,7 +15,11 @@ declare(strict_types=1);
 
 namespace OpenHealthcare\TitleXReport;
 
+use OpenEMR\Common\Acl\AclMain;
 use OpenEMR\Menu\MenuEvent;
+use OpenHealthcare\Common\Contract\Worklist\Worklist;
+use OpenHealthcare\Common\Contract\Worklist\WorkSource;
+use OpenHealthcare\TitleXReport\Worklist\ConfidentialVisitsSource;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 final class Bootstrap
@@ -30,6 +35,21 @@ final class Bootstrap
     public function subscribeToEvents(): void
     {
         $this->eventDispatcher->addListener(MenuEvent::MENU_UPDATE, $this->addMenuItem(...));
+        $this->eventDispatcher->addListener('staff_worklist.collect_sources', $this->addWorklistTab(...));
+    }
+
+    /**
+     * "Confidential visits" in the Staff Worklist (0.8.0 or later), for billing staff: the visits in the site's
+     * confidential categories that a claim or a statement could expose. Built on openhealthcare-common's contract;
+     * where a module copied in by hand loaded an older copy of the library first, the contract isn't there and the tab
+     * is left out rather than stop the page.
+     */
+    public function addWorklistTab(object $event): void
+    {
+        if (!interface_exists(WorkSource::class) || !AclMain::aclCheckCore('acct', 'bill')) {
+            return;
+        }
+        Worklist::contribute($event, new ConfidentialVisitsSource(Worklist::now($event)), xl('Confidential visits'), xl('Biller'));
     }
 
     public function addMenuItem(MenuEvent $event): MenuEvent

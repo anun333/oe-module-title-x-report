@@ -41,7 +41,13 @@ $source = new EncounterSource();
 $saved = false;
 if ($request->isMethod('POST') && Request::text($request->request->all(), 'action') === 'settings') {
     OpenEmr::requireCsrf(Request::text($request->request->all(), 'csrf_token_form'));
-    $settings->save(array_map('intval', $request->request->all('categories')), array_map('intval', $request->request->all('facilities')), Request::text($request->request->all(), 'region'), (int)OpenEmr::session('authUserID'));
+    $settings->save(
+        array_map('intval', $request->request->all('categories')),
+        array_map('intval', $request->request->all('facilities')),
+        Request::text($request->request->all(), 'region'),
+        (int)OpenEmr::session('authUserID'),
+        array_map('intval', $request->request->all('confidential')),
+    );
     OpenEmr::audit('other', 'Title X Report: settings saved');
     $saved = true;
 }
@@ -64,6 +70,7 @@ OpenEmr::audit('other', 'Title X Report: report viewed');
 $csrf = OpenEmr::csrfToken();
 $chosenCategories = array_flip($categories);
 $chosenFacilities = array_flip($facilities);
+$chosenConfidential = array_flip($settings->confidential());
 $toFix = $report->toFix();
 ?>
 <!DOCTYPE html>
@@ -230,6 +237,15 @@ $toFix = $report->toFix();
                 <?php endforeach; ?>
             </fieldset>
         </div>
+        <fieldset class="mt-2">
+            <legend class="h6"><?php echo xlt('Confidential services'); ?></legend>
+            <p class="small"><?php echo xlt('Choose the visit categories you use for confidential services. The Staff Worklist then lists, for billing staff, any of these visits billed to insurance, and any with a balance whose statement would go to a guardian. Choose none to leave this off.'); ?></p>
+            <?php foreach ($source->categories() as $c) : ?>
+                <div class="form-check"><label class="form-check-label">
+                    <input class="form-check-input" type="checkbox" name="confidential[]" value="<?php echo attr((string)$c['id']); ?>"<?php echo isset($chosenConfidential[$c['id']]) ? ' checked' : ''; ?>>
+                    <?php echo text(xl_appt_category($c['name'])); ?></label></div>
+            <?php endforeach; ?>
+        </fieldset>
         <div class="form-group mt-2">
             <label for="region"><?php echo xlt('Poverty guidelines for Table 4'); ?></label>
             <select id="region" name="region" class="form-control" style="max-width: 24rem">

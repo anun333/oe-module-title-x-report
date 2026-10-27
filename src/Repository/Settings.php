@@ -1,9 +1,11 @@
 <?php
 
 /**
- * The site's Title X settings: which visit categories are Title X visits, and which facilities are in the
- * project. OPA leaves "is this a family planning encounter" to the clinic and its project officer, so the report
- * asks rather than guesses.
+ * The site's Title X settings: which visit categories are Title X visits, which facilities are in the project, and
+ * which visit categories the site uses for confidential services. OPA leaves "is this a family planning encounter"
+ * to the clinic and its project officer, so the report asks rather than guesses; and core has no "confidential
+ * billing" mark on a visit (form_encounter.sensitivity is access control, who may see it), so the confidential
+ * categories are the site's own answer too.
  *
  * @package   OpenEMR
  * @link      https://www.open-emr.org
@@ -33,6 +35,17 @@ final class Settings
         return $this->ids('facilities');
     }
 
+    /**
+     * The visit categories the site uses for confidential services: none until a site picks them, and then the Staff
+     * Worklist's "Confidential visits" tab looks at those visits.
+     *
+     * @return list<int>
+     */
+    public function confidential(): array
+    {
+        return $this->ids('confidential');
+    }
+
     /** Which HHS poverty guidelines Table 4's preview uses: contiguous (the 48 states and DC), alaska or hawaii. */
     public function region(): string
     {
@@ -44,10 +57,11 @@ final class Settings
     /**
      * @param list<int> $categories
      * @param list<int> $facilities
+     * @param list<int> $confidential
      */
-    public function save(array $categories, array $facilities, string $region, int $userId): void
+    public function save(array $categories, array $facilities, string $region, int $userId, array $confidential = []): void
     {
-        foreach (['categories' => $categories, 'facilities' => $facilities] as $name => $ids) {
+        foreach (['categories' => $categories, 'facilities' => $facilities, 'confidential' => $confidential] as $name => $ids) {
             QueryUtils::sqlStatementThrowException(
                 'REPLACE INTO title_x_report_setting (name, value, updated_by) VALUES (?, ?, ?)',
                 [$name, json_encode(array_values(array_unique(array_map('intval', $ids)))), $userId]
