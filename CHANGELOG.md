@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.3.0 (unreleased)
+## 0.3.0 (2026-10-27)
 
 - **Confidential visits, before a claim or a statement exposes them.** Under **Which visits count**, a new **Confidential services** setting names the visit categories you use for confidential services (none until you pick them). The Staff Worklist (0.8.0 or later) then has a **Confidential visits** tab for billing staff, with visits from the last year in those categories:
   - **queued or billed to insurance:** the policyholder may see the claim, so check the client was told and agreed (42 CFR 59.10(a)). A claim still queued is listed first, since it can still be taken back. The row never names a payer.
